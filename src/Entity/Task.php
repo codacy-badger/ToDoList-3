@@ -3,16 +3,18 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\TaskRepository")
+ * @ORM\Entity
+ * @ORM\Table
  */
 class Task
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -22,12 +24,14 @@ class Task
     private $createdAt;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Vous devez saisir un titre.")
      */
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="Vous devez saisir du contenu.")
      */
     private $content;
 
@@ -36,56 +40,54 @@ class Task
      */
     private $isDone;
 
-    public function getId(): ?int
+    public function __construct()
+    {
+        $this->createdAt = new \Datetime();
+        $this->isDone = false;
+    }
+
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-
-        return $this;
     }
 
-    public function getTitle(): ?string
+    public function getTitle()
     {
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle($title)
     {
         $this->title = $title;
-
-        return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent()
     {
         return $this->content;
     }
 
-    public function setContent(string $content): self
+    public function setContent($content)
     {
         $this->content = $content;
-
-        return $this;
     }
 
-    public function getIsDone(): ?bool
+    public function isDone()
     {
         return $this->isDone;
     }
 
-    public function setIsDone(bool $isDone): self
+    public function toggle($flag)
     {
-        $this->isDone = $isDone;
-
-        return $this;
+        $this->isDone = $flag;
     }
 }
